@@ -1,3 +1,4 @@
+import json
 import streamlit as st
 from backend import streamlitInStreamlit as form_maker
 
@@ -24,7 +25,13 @@ question3 = {"type": 'scale',
              "label": "1-10"}
 ex_q_list = [question1, question2, question2_other, question3]
 
-st.write("Fragebogen Knie")
+elif st.session_state.current_step == "deep_questions":
+    st.header("Deep Questions")
+    for i, question in enumerate(st.session_state.deep_questions):
+        st.subheader(f"Question {i+1}: {question}")
+        options = generate_options(question)
+        answer = st.multiselect(f"Select answers for Question {i+1}", options)
+        st.session_state.fragebogen["deep_questions"][question] = answer
 
 out = form_maker.render_question_list(ex_q_list)
 

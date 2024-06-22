@@ -1,10 +1,22 @@
 import streamlit as st
+<<<<<<< HEAD
 from datetime import datetime
 
 st.header("Code&Create Group 3")
 
 notifications = ["Your appointment with Dr. Smith is confirmed for tomorrow.",
                  "You have a new prescription from Dr. Brown."]  # sample data, later change to data from db
+=======
+
+st.header("Code&Create Group 3")
+
+if 'notifications' not in st.session_state:
+    st.session_state.notifications = ["Your appointment with Dr. Smith is confirmed for tomorrow.",
+                     "You have a new prescription from Dr. Brown."]  # sample data, later change to data from db
+
+if 'checked_notifications' not in st.session_state:
+    st.session_state.checked_notifications = [False] * len(st.session_state.notifications)
+>>>>>>> origin/Frontend2
 
 if 'appointments' not in st.session_state:
     st.session_state.appointments = [
@@ -19,6 +31,7 @@ prescriptions = [
                                                                                             "taken before or after "
                                                                                             "the food."}
 ]
+<<<<<<< HEAD
 
 
 def display_notifications(notifications):
@@ -30,6 +43,28 @@ def display_notifications(notifications):
         st.sidebar.write("No new notifications")
 
 
+=======
+def display_notifications(notifications):
+    with st.expander("Notifications: ", expanded=True): #st.sidebar.header
+        if notifications:
+            for idx, note in enumerate(notifications):
+                checked = st.checkbox(f"{note}" if not st.session_state.checked_notifications[idx] else f"~~{note}~~", key=f"notification_{idx}", value=st.session_state.checked_notifications[idx])
+                if checked != st.session_state.checked_notifications[idx]:
+                    st.session_state.checked_notifications[idx] = checked
+                    st.experimental_rerun()
+        else:
+            st.write("No new notifications")
+
+def update_notifications():
+    st.session_state.notifications = [note for idx, note in enumerate(st.session_state.notifications) if not st.session_state.checked_notifications[idx]]
+    st.session_state.checked_notifications = [False] * len(st.session_state.notifications)
+
+display_notifications(st.session_state.notifications)
+
+if st.button("Update notifications"):
+    update_notifications()
+    st.experimental_rerun()
+>>>>>>> origin/Frontend2
 def display_appointments(appointments):
     st.header("Your Appointments")
     if appointments:
@@ -41,7 +76,10 @@ def display_appointments(appointments):
     else:
         st.write("No upcoming appointments")
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/Frontend2
 def display_prescriptions(prescriptions):
     st.header("Your Preinscriptions")
     if prescriptions:
@@ -53,19 +91,30 @@ def display_prescriptions(prescriptions):
     else:
         st.write("You don't have any prescriptions")
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/Frontend2
 def book_appointment():
     st.header("Book a New Appointment")
     c1, c2 = st.columns(2)
     with c1:
         location = st.multiselect("Location: ",
+<<<<<<< HEAD
                                   ("All", "Karlsruhe", "Deggendorf", "Berkin"), placeholder="Search For Location")
+=======
+                                  ("All", "Karlsruhe", "Deggendorf", "Berkin"), placeholder="Search For Location"),
+>>>>>>> origin/Frontend2
     with c2:
         doctor_type = st.multiselect("Doctor type: ",
                                      ("All", "General Practice", "Surgeon", "Psychotherapist"),
                                      placeholder="Search for Doctor")
     doctor = st.multiselect("Doctor: ",
+<<<<<<< HEAD
                             ("All", "Marina Schultz", "John Smith"), )
+=======
+                            ("All", "Marina Schultz", "John Smith"))
+>>>>>>> origin/Frontend2
     date = st.date_input("Select Date")
     time = st.time_input("Select Time")
     if st.button("Book Appointment"):
@@ -85,4 +134,7 @@ with tab1:
 with tab2:
     display_prescriptions(prescriptions)
 
+<<<<<<< HEAD
 display_notifications(notifications)
+=======
+>>>>>>> origin/Frontend2
