@@ -31,6 +31,13 @@ def termin_creation(slot_id, pat_id):
             print("the sqlite connection is closed")
 
 
+def convertToBinaryData(filename):
+    # Convert digital data to binary format
+    with open(filename, 'rb') as file:
+        blobData = file.read()
+    return blobData
+
+
 def insert_summary(patID, slotID, status, summary_path):
     try:
         sqliteConnection = sqlite3.connect('Test.db')
@@ -81,6 +88,27 @@ def create_prescription(termID, type, **kwargs):
 
         else:
             raise "Type is not right. It should be either 'medicine' or 'redirection'"
+
+        sqliteConnection.commit()
+        print("File inserted successfully as a BLOB into a table")
+        cursor.close()
+
+    except sqlite3.Error as error:
+        print("Failed to insert blob data into sqlite table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("the sqlite connection is closed")
+
+
+def attach_file_to_termin(termID, file_path):
+    try:
+        sqliteConnection = sqlite3.connect('Test.db')
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+
+        file = convertToBinaryData(file_path)
+        cursor.execute(""" INSERT INTO TerminAttachedFiles(termID, file) VALUES (?, ?)""", (termID, file))
 
         sqliteConnection.commit()
         print("File inserted successfully as a BLOB into a table")
