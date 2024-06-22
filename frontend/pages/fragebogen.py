@@ -30,4 +30,8 @@ event = st.text_area("Können Sie ein Ereignis beschreiben, nachdem die Schmerze
 
 st.button(label="Submit", on_click=submit_form)
 
+back = st.button("Back")
+if back:
+    st.switch_page("./pages/termin.py")
+
 # Every form must have a submit button.

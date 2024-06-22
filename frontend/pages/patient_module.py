@@ -1,7 +1,8 @@
 import streamlit as st
 from datetime import datetime
-from frontend.backend.termin_manipulation import termin_creation
+from frontend.backend.termin_manipulation import termin_creation, attach_file_to_termin
 import uuid
+import os
 
 # Sample data for notifications, appointments, and prescriptions
 if 'notifications' not in st.session_state:
@@ -80,14 +81,28 @@ def display_prescriptions(prescriptions):
 
 def book_appointment(slots_taken, user_id):
     st.header("Book a New Appointment")
+    appointment_id = uuid.uuid1()
     location = st.multiselect("Location:", ["All", "Karlsruhe", "Deggendorf", "Berlin"], default="All")
     doctor_type = st.multiselect("Doctor type:", ["All", "General Practice", "Surgeon", "Psychotherapist"],
                                  default="All")
     doctor = st.multiselect("Doctor:", ["All", "Marina Schultz", "John Smith"], default="All")
     date = st.date_input("Select Date")
     time = st.time_input("Select Time")
+    files = st.file_uploader("Select files", type="pdf", accept_multiple_files=True)
+    if 'files' not in st.session_state:
+        st.session_state.files = []
+    if files:
+        st.session_state.files.extend(files)
+        for file in st.session_state.files:
+            if not os.path.exists("tempDir"):
+                os.makedirs("tempDir")
+            with open(os.path.join("tempDir", file.name), "wb") as f:
+                f.write(file.getbuffer())
+            path = os.path.abspath(os.path.join('tempDir', file.name))
+            attach_file_to_termin(appointment_id, path)
+        print(f"Files: {st.session_state.files}")
+
     if st.button("Book Appointment"):
-        appointment_id = uuid.uuid1()
         new_appointment = {
             "location": location,
             "doctor type": doctor_type,
@@ -95,13 +110,16 @@ def book_appointment(slots_taken, user_id):
             "date": date.strftime("%Y-%m-%d"),
             "time": time.strftime("%I:%M %p"),
             "summary": " ",
+            "files": st.session_state.files,
             "id": appointment_id
         }
+        st.session_state.files = []
         slot_id = uuid.uuid1()
         slots_taken.append(slot_id)
         st.session_state.appointments.append(new_appointment)
         st.success("Appointment booked successfully!")
         termin_creation(slot_id, user_id) #slot_id and pat_id
+        print(f"Files2: {st.session_state.files}")
         st.experimental_rerun()
 
 tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])

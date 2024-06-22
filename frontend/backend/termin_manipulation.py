@@ -83,7 +83,6 @@ def insert_summary(patID, slotID, status, summary_path):
             sqliteConnection.close()
             print("the sqlite connection is closed")
 
-
 def create_prescription(termID, type, **kwargs):
     try:
         sqliteConnection = sqlite3.connect('Test.db')

@@ -3,7 +3,6 @@ import sqlite3
 from frontend.backend.termin_manipulation import termin_cancelation
 
 # Date, Location, Doctor name, Summary, Documents?
-
 termin_key = st.session_state.termin_key
 termin_info = [appointment for appointment in st.session_state.appointments if appointment['id']==termin_key]
 termin_info = termin_info[0]
@@ -14,7 +13,6 @@ def open_termin(termin):
     date = st.write(f"Date: {termin['date']}")
     time = st.write(f"Time:  {termin['time']}")
     doctor = st.write(f"Doctor:  {termin['doctor']}")
-    print(termin)
     summary = None
     if summary is None:
         st.write(":red[Form not Filled, Please Fill Form]")
@@ -34,6 +32,10 @@ def open_termin(termin):
             st.switch_page("./pages/patient_module.py")
     with c2:
         st.button("Reschedule Appointment")
+
+    back = st.button("Back")
+    if back:
+        st.switch_page("./pages/patient_module.py")
 
 
 # location = s
