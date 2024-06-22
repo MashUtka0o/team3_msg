@@ -108,7 +108,6 @@ def book_appointment():
     else:
         st.write("No Doctor Found")
 
-
 tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])
 
 with tab1:
@@ -121,7 +120,6 @@ with tab2:
 back = st.button("Back to Home Page")
 if back:
     st.switch_page("./home_page.py")
-
 
 def display_menu():
     st.sidebar.title("Menu")

@@ -62,7 +62,6 @@ def display_patient_list():
         if st.button(f"View {patient['name']}"):
             st.session_state.selected_patient = idx
 
-
 def display_patient_details(patient):
     # Load patient data from the selected file
     with open(patient["data_file"], "r") as file:
@@ -121,7 +120,6 @@ def display_patient_details(patient):
         st.write(f"**Address**: {patient_data['personal_information']['address']}")
         st.write(f"**Phone**: {patient_data['personal_information']['phone']}")
         st.write(f"**Email**: {patient_data['personal_information']['email']}")
-
 
 # Main application logic
 if st.session_state.selected_patient is None:
