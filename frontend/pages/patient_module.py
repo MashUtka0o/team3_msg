@@ -14,9 +14,12 @@ if 'appointments' not in st.session_state:
     ]
 
 prescriptions = [
-    {"doctor": "Dr. Schasn", "medication": "Paracetamol", "date": "2024-06-20", "instruction": "Twice per day after food."},
-    {"doctor": "Dr. Smith", "medication": "Ibuprofen", "date": "2024-06-19", "instruction": "Once per day. Can be taken before or after food."}
+    {"doctor": "Dr. Schasn", "medication": "Paracetamol", "date": "2024-06-20",
+     "instruction": "Twice per day after food."},
+    {"doctor": "Dr. Smith", "medication": "Ibuprofen", "date": "2024-06-19",
+     "instruction": "Once per day. Can be taken before or after food."}
 ]
+
 
 def display_notifications(notifications):
     st.sidebar.header("Notifications")
@@ -26,6 +29,7 @@ def display_notifications(notifications):
     else:
         st.sidebar.write("No new notifications")
 
+
 def display_appointments(appointments):
     st.header("Your Appointments")
     if appointments:
@@ -34,8 +38,10 @@ def display_appointments(appointments):
             st.write(f"**Date**: {appointment['date']}")
             st.write(f"**Time**: {appointment['time']}")
             st.write("---")
+
     else:
         st.write("No upcoming appointments")
+
 
 def display_prescriptions(prescriptions):
     st.header("Your Prescriptions")
@@ -48,33 +54,35 @@ def display_prescriptions(prescriptions):
     else:
         st.write("You don't have any prescriptions")
 
+
 def book_appointment():
     st.header("Book a New Appointment")
     location = st.multiselect("Location:", ["All", "Karlsruhe", "Deggendorf", "Berlin"], default="All")
-    doctor_type = st.multiselect("Doctor type:", ["All", "General Practice", "Surgeon", "Psychotherapist"], default="All")
+    doctor_type = st.multiselect("Doctor type:", ["All", "General Practice", "Surgeon", "Psychotherapist"],
+                                 default="All")
     doctor = st.multiselect("Doctor:", ["All", "Marina Schultz", "John Smith"], default="All")
     date = st.date_input("Select Date")
     time = st.time_input("Select Time")
     if st.button("Book Appointment"):
         new_appointment = {
-            "location": location, 
-            "doctor type": doctor_type, 
-            "doctor": doctor, 
-            "date": date.strftime("%Y-%m-%d"), 
+            "location": location,
+            "doctor type": doctor_type,
+            "doctor": doctor,
+            "date": date.strftime("%Y-%m-%d"),
             "time": time.strftime("%I:%M %p")
         }
         st.session_state.appointments.append(new_appointment)
         st.success("Appointment booked successfully!")
         st.experimental_rerun()
 
-def patient_homepage():
-    display_notifications(notifications)
 
-    tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])
+display_notifications(notifications)
 
-    with tab1:
-        display_appointments(st.session_state.appointments)
-        book_appointment()
+tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])
 
-    with tab2:
-        display_prescriptions(prescriptions)
+with tab1:
+    display_appointments(st.session_state.appointments)
+    book_appointment()
+
+with tab2:
+    display_prescriptions(prescriptions)

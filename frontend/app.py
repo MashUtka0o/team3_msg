@@ -1,10 +1,12 @@
 import streamlit as st
-from doctor_module import doctor_homepage
-from patient_module import patient_homepage
+from pages.doctor_module import doctor_homepage
+from pages.patient_module import patient_homepage
+
 
 # Define navigation function
 def navigate_to(page):
     st.session_state.current_page = page
+
 
 # Initialize session state
 if "current_page" not in st.session_state:

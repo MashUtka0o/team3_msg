@@ -18,17 +18,14 @@ def open_termin(termin):
     with st.expander("Important Information"):
         st.write("Please bring with you all of your money in your bank account")
         if summary is None:
-            st.button("Fill in Form NOW", on_click=open_questionnaire)
+            if st.button("Fill in Form NOW"):
+                st.switch_page("./pages/fragebogen.py")
 
     c1, c2, c3 = st.columns([1, 1, 2])
     with c1:
         st.button("Cancel Appointment")
     with c2:
         st.button("Reschedule Appointment")
-
-
-def open_questionnaire():
-    navigate_to("fragebogen.py")
 
 
 # location = s
