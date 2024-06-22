@@ -11,6 +11,7 @@ def get_pat_termin(pat_id):
         cursor.execute(query, str(pat_id))
         sqliteConnection.commit()
         rows = cursor.fetchall()
+        rows = list(dict.fromkeys(rows))
         cursor.close()
         return rows
     except sqlite3.Error as error:
@@ -21,12 +22,124 @@ def get_pat_termin(pat_id):
             print("the sqlite connection is closed")
 
 
-def get_free_slots(doc_id):
+def get_loc():
+    try:
+        sqliteConnection = sqlite3.connect("./backend/Test.db")
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+        query = """SELECT * FROM Locations"""
+        cursor.execute(query)
+        sqliteConnection.commit()
+        rows = cursor.fetchall()
+        rows = [x[1] for x in rows]
+        cursor.close()
+        return rows
+    except sqlite3.Error as error:
+        print("Failed to Get Table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("the sqlite connection is closed")
+
+
+def get_doc_termin(doc_id):
+    try:
+        sqliteConnection = sqlite3.connect("./backend/Test.db")
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+        query = """SELECT termID, patName, patSurname, slotDate, slotTime, locAddress FROM TerminInfo WHERE patID = (?) AND status = 1"""
+        cursor.execute(query, str(doc_id))
+        sqliteConnection.commit()
+        rows = cursor.fetchall()
+        rows = list(dict.fromkeys(rows))
+        cursor.close()
+        return rows
+    except sqlite3.Error as error:
+        print("Failed to Get Table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("the sqlite connection is closed")
     return
 
 
-def get_doc_id(search):
-    return
+def get_free_slots(location, doctor):
+    try:
+        sqliteConnection = sqlite3.connect("./backend/Test.db")
+        # sqliteConnection = sqlite3.connect("Test.db")
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+        name_parts = doctor.split(maxsplit=1)  # Split at the last whitespace
+
+        if len(name_parts) < 2:
+            first_name = ""
+            surname = name_parts[0]
+        else:
+            first_name = name_parts[0]
+            surname = name_parts[1]
+
+        query = """SELECT slotID, slotDate, slotTime FROM DoctorsInfo WHERE name = (?) AND surname = (?) AND slotStatus = 1"""
+        cursor.execute(query, (first_name, surname))
+        sqliteConnection.commit()
+        rows = cursor.fetchall()
+        cursor.close()
+        return rows
+    except sqlite3.Error as error:
+        print("Failed to Get Table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("the sqlite connection is closed")
+
+
+def get_doctor_type():
+    try:
+        sqliteConnection = sqlite3.connect("./backend/Test.db")
+        # sqliteConnection = sqlite3.connect("Test.db")
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+        query = """SELECT type FROM Doctors"""
+        cursor.execute(query)
+        sqliteConnection.commit()
+        rows = cursor.fetchall()
+        rows = [x[0] for x in rows]
+        rows = list(dict.fromkeys(rows))
+        cursor.close()
+        return rows
+    except sqlite3.Error as error:
+        print("Failed to Get Table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("the sqlite connection is closed")
+
+
+def get_doc(doc_type):
+    try:
+        sqliteConnection = sqlite3.connect("./backend/Test.db")
+        # sqliteConnection = sqlite3.connect("Test.db")
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+
+        if doc_type:
+            query = f"SELECT name,surname FROM Doctors WHERE type IN ({','.join(['?'] * len(doc_type))})"
+            cursor.execute(query, doc_type)
+        else:
+            query = """SELECT name, surname FROM Doctors"""
+            cursor.execute(query)
+        sqliteConnection.commit()
+        rows = cursor.fetchall()
+        rows = [x[0] + " " + x[1] for x in rows]
+        # rows = [x[0] for x in rows]
+        # rows = list(dict.fromkeys(rows))
+        cursor.close()
+        return rows
+    except sqlite3.Error as error:
+        print("Failed to Get Table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("the sqlite connection is closed")
 
 
 def termin_creation(slot_id, pat_id):

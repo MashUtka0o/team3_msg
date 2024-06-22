@@ -10,9 +10,10 @@ from backend import termin_manipulation
 # Have: patID
 # Get: terID, (docName, docSurname), slotDate, slotTime, locAddress
 
+
 appointment_list = termin_manipulation.get_pat_termin(1)
-appointment_list = list(dict.fromkeys(appointment_list))
-print(appointment_list)
+location_list = termin_manipulation.get_loc()
+doc_type_list = termin_manipulation.get_doctor_type()
 
 # Sample data for notifications, appointments, and prescriptions
 if 'notifications' not in st.session_state:
@@ -73,8 +74,6 @@ def display_appointments(appointments):
                 st.session_state.termin_key = appointment[0]
                 st.switch_page("./pages/termin.py")
             st.write("---")
-        
-
     else:
         st.write("No upcoming appointments")
 
@@ -93,23 +92,21 @@ def display_prescriptions(prescriptions):
 
 def book_appointment():
     st.header("Book a New Appointment")
-    location = st.multiselect("Location:", ["All", "Karlsruhe", "Deggendorf", "Berlin"], default="All")
-    doctor_type = st.multiselect("Doctor type:", ["All", "General Practice", "Surgeon", "Psychotherapist"],
-                                 default="All")
-    doctor = st.multiselect("Doctor:", ["All", "Marina Schultz", "John Smith"], default="All")
-    date = st.date_input("Select Date")
-    time = st.time_input("Select Time")
-    if st.button("Book Appointment"):
-        new_appointment = {
-            "location": location,
-            "doctor type": doctor_type,
-            "doctor": doctor,
-            "date": date.strftime("%Y-%m-%d"),
-            "time": time.strftime("%I:%M %p")
-        }
-        st.session_state.appointments.append(new_appointment)
-        st.success("Appointment booked successfully!")
-        st.experimental_rerun()
+    location = st.multiselect("Location:", location_list)
+    doctor_type = st.multiselect("Doctor type:", doc_type_list)
+    doc_list = termin_manipulation.get_doc(doctor_type)
+    if doc_list:
+        doctor = st.selectbox("Doctor:", doc_list)
+        slot_list = termin_manipulation.get_free_slots(location, doctor)
+
+        if slot_list:
+            slots = st.selectbox("Slots Available", slot_list)
+        else:
+            st.write("No Slots Available")
+        if st.button("Book Appointment"):
+            st.write("Fkjdshlfdskj")
+    else:
+        st.write("No Doctor Found")
 
 
 tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])
