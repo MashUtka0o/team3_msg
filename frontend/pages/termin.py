@@ -1,12 +1,13 @@
 import streamlit as st
 import sqlite3
-from frontend.backend.termin_manipulation import termin_cancelation
+from backend.termin_manipulation import termin_cancelation
 
 # Date, Location, Doctor name, Summary, Documents?
 termin_key = st.session_state.termin_key
 print(f"termin key: {termin_key}")
-termin_info = [appointment for appointment in st.session_state.appointments if appointment['id']==termin_key]
+termin_info = [appointment for appointment in st.session_state.appointments if appointment['id'] == termin_key]
 termin_info = termin_info[0]
+
 
 def open_termin(termin):
     st.header("Appointment Information")
@@ -33,7 +34,8 @@ def open_termin(termin):
     with c1:
         if st.button("Cancel Appointment"):
             termin_cancelation(termin_key)
-            st.session_state.appointments = [appointment for appointment in st.session_state.appointments if appointment['id']!=termin['id']]
+            st.session_state.appointments = [appointment for appointment in st.session_state.appointments if
+                                             appointment['id'] != termin['id']]
             st.switch_page("./pages/patient_module.py")
     with c2:
         st.button("Reschedule Appointment")

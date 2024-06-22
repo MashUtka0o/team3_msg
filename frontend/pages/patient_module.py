@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import datetime
-from backend import termin_manipulation 
+from backend import termin_manipulation
 from backend.termin_manipulation import termin_creation, attach_file_to_termin
 import time
 import random
@@ -25,7 +25,6 @@ appointment_list = termin_manipulation.get_pat_termin(1)
 location_list = termin_manipulation.get_loc()
 doc_type_list = termin_manipulation.get_doctor_type()
 
-
 # Sample data for notifications, appointments, and prescriptions
 if 'notifications' not in st.session_state:
     st.session_state.notifications = ["Your appointment with Dr. Smith is confirmed for tomorrow.",
@@ -47,9 +46,9 @@ prescriptions = [
      "instruction": "Once per day. Can be taken before or after food."}
 ]
 
-
 slots_taken = [1, 2, 45, 23]
 user_id = 1
+
 
 def generate_uid():
     random_int = random.randint(1, 1000000)
@@ -57,11 +56,13 @@ def generate_uid():
     id = (timestamp << 20) | random_int  # Shift timestamp and combine with random int
     return id
 
+
 def display_notifications(notifications):
-    with st.expander("Notifications: ", expanded=True): #st.sidebar.header
+    with st.expander("Notifications: ", expanded=True):  # st.sidebar.header
         if notifications:
             for idx, note in enumerate(notifications):
-                checked = st.checkbox(f"{note}" if not st.session_state.checked_notifications[idx] else f"~~{note}~~", key=f"notification_{idx}", value=st.session_state.checked_notifications[idx])
+                checked = st.checkbox(f"{note}" if not st.session_state.checked_notifications[idx] else f"~~{note}~~",
+                                      key=f"notification_{idx}", value=st.session_state.checked_notifications[idx])
                 if checked != st.session_state.checked_notifications[idx]:
                     st.session_state.checked_notifications[idx] = checked
                     st.experimental_rerun()
@@ -110,10 +111,11 @@ def display_prescriptions(prescriptions):
 
 
 def book_appointment():
+    global appointment_list
     st.header("Book a New Appointment")
     appointment_id = generate_uid()
     location = st.multiselect("Location:", location_list)
-    doctor_type = st.selectbox("Doctor type:", doc_type_list)
+    doctor_type = st.multiselect("Doctor type:", doc_type_list)
     doc_list = termin_manipulation.get_doc(doctor_type)
     if doc_list:
         doctor = st.selectbox("Doctor:", doc_list)
@@ -161,7 +163,8 @@ def book_appointment():
             slots_taken.append(slot_id)
             st.session_state.appointments.append(new_appointment)
             st.success("Appointment booked successfully!")
-            termin_creation(slot_id, 1) #slot_id and pat_id
+            termin_creation(slot_id, 1)  # slot_id and pat_id
+            appointment_list = termin_manipulation.get_pat_termin(1)
         st.session_state.files = []
         st.session_state.file_names = []
         st.session_state.path = None
@@ -173,7 +176,7 @@ tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])
 
 with tab1:
     book_appointment()
-    display_appointments(st.session_state.appointments)
+    display_appointments(appointment_list)
 
 with tab2:
     display_prescriptions(prescriptions)
@@ -181,6 +184,7 @@ with tab2:
 back = st.button("Back to Home Page")
 if back:
     st.switch_page("./home_page.py")
+
 
 def display_menu():
     st.sidebar.title("Menu")

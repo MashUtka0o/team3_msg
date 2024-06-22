@@ -2,9 +2,10 @@ import sqlite3
 from os import getcwd
 import datetime
 
+
 def termin_creation(slot_id, pat_id):
     try:
-        sqliteConnection = sqlite3.connect('frontend/backend/Test.db')
+        sqliteConnection = sqlite3.connect('./backend/Test.db')
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
@@ -34,7 +35,7 @@ def termin_creation(slot_id, pat_id):
 
 def termin_cancelation(termID):
     try:
-        sqliteConnection = sqlite3.connect('frontend/backend/Test.db')
+        sqliteConnection = sqlite3.connect('./backend/Test.db')
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
@@ -63,7 +64,7 @@ def convertToBinaryData(filename):
 
 def insert_summary(patID, slotID, status, summary_path):
     try:
-        sqliteConnection = sqlite3.connect('frontend/backend/Test.db')
+        sqliteConnection = sqlite3.connect('./backend/Test.db')
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
         sqlite_insert_blob_query = """ INSERT INTO Termins
@@ -84,9 +85,10 @@ def insert_summary(patID, slotID, status, summary_path):
             sqliteConnection.close()
             print("the sqlite connection is closed")
 
+
 def create_prescription(termID, type, **kwargs):
     try:
-        sqliteConnection = sqlite3.connect('frontend/backend/Test.db')
+        sqliteConnection = sqlite3.connect('./backend/Test.db')
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
@@ -129,7 +131,7 @@ def attach_file_to_termin(termID, file_path):
     current_dir = getcwd()
     db_path = f'{current_dir}/Test.db'
     try:
-        sqliteConnection = sqlite3.connect("frontend/backend/Test.db")
+        sqliteConnection = sqlite3.connect("./backend/Test.db")
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
@@ -148,6 +150,7 @@ def attach_file_to_termin(termID, file_path):
         if sqliteConnection:
             sqliteConnection.close()
             print("the sqlite connection is closed")
+
 
 def show_all_the_tables():
     sqliteConnection = sqlite3.connect('Test.db')
