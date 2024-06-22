@@ -31,6 +31,28 @@ def termin_creation(slot_id, pat_id):
             print("the sqlite connection is closed")
 
 
+def termin_cancelation(termID):
+    try:
+        sqliteConnection = sqlite3.connect('Test.db')
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+
+        cursor.execute(""" DELETE FROM Termins WHERE termID = (?) """, (termID,))
+
+        print('Termin was removed to the table')
+
+        sqliteConnection.commit()
+        print("File updated successfully")
+        cursor.close()
+
+    except sqlite3.Error as error:
+        print("Failed to update table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("the sqlite connection is closed")
+
+
 def convertToBinaryData(filename):
     # Convert digital data to binary format
     with open(filename, 'rb') as file:
