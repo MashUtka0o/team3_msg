@@ -1,5 +1,7 @@
 import streamlit as st
 from datetime import datetime
+from frontend.backend.termin_manipulation import termin_creation
+import uuid
 
 # Sample data for notifications, appointments, and prescriptions
 if 'notifications' not in st.session_state:
@@ -11,8 +13,8 @@ if 'checked_notifications' not in st.session_state:
 
 if 'appointments' not in st.session_state:
     st.session_state.appointments = [
-        {"doctor": "Dr. Smith", "date": "2024-06-25", "time": "10:00 AM"},
-        {"doctor": "Dr. Wolfl", "date": "2024-06-26", "time": "2:00 PM"}
+        {"doctor": "Dr. Smith", "date": "2024-06-25", "time": "10:00 AM", "id": 1, "summary": " "},
+        {"doctor": "Dr. Wolfl", "date": "2024-06-26", "time": "2:00 PM", "id": 2, "summary": "Broken leg"}
     ]
 
 prescriptions = [
@@ -22,6 +24,8 @@ prescriptions = [
      "instruction": "Once per day. Can be taken before or after food."}
 ]
 
+slots_taken = [1, 2, 45, 23]
+user_id = 3452
 
 def display_notifications(notifications):
     with st.expander("Notifications: ", expanded=True): #st.sidebar.header
@@ -53,7 +57,7 @@ def display_appointments(appointments):
             st.write(f"**Date**: {appointment['date']}")
             st.write(f"**Time**: {appointment['time']}")
             if st.button(key=appointment, label="See More"):
-                st.session_state.termin_key = 12345
+                st.session_state.termin_key = appointment['id']
                 st.switch_page("./pages/termin.py")
             st.write("---")
 
@@ -74,7 +78,7 @@ def display_prescriptions(prescriptions):
         st.write("You don't have any prescriptions")
 
 
-def book_appointment():
+def book_appointment(slots_taken, user_id):
     st.header("Book a New Appointment")
     location = st.multiselect("Location:", ["All", "Karlsruhe", "Deggendorf", "Berlin"], default="All")
     doctor_type = st.multiselect("Doctor type:", ["All", "General Practice", "Surgeon", "Psychotherapist"],
@@ -83,22 +87,27 @@ def book_appointment():
     date = st.date_input("Select Date")
     time = st.time_input("Select Time")
     if st.button("Book Appointment"):
+        appointment_id = uuid.uuid1()
         new_appointment = {
             "location": location,
             "doctor type": doctor_type,
             "doctor": doctor,
             "date": date.strftime("%Y-%m-%d"),
-            "time": time.strftime("%I:%M %p")
+            "time": time.strftime("%I:%M %p"),
+            "summary": " ",
+            "id": appointment_id
         }
+        slot_id = uuid.uuid1()
+        slots_taken.append(slot_id)
         st.session_state.appointments.append(new_appointment)
         st.success("Appointment booked successfully!")
+        termin_creation(slot_id, user_id) #slot_id and pat_id
         st.experimental_rerun()
-
 
 tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])
 
 with tab1:
-    book_appointment()
+    book_appointment(slots_taken, user_id)
     display_appointments(st.session_state.appointments)
 
 with tab2:
@@ -111,15 +120,15 @@ if back:
 def display_menu():
     st.sidebar.title("Menu")
     st.sidebar.write("---")
-    st.sidebar.write("Smart Stats")
+    st.sidebar.button("Smart Stats")
     st.sidebar.write("---")
-    st.sidebar.write("Connections")
+    st.sidebar.button("Connections")
     st.sidebar.write("---")
-    st.sidebar.write("Health Plan")
+    st.sidebar.button("Health Plan")
     st.sidebar.write("---")
-    st.sidebar.write("Documents")
+    st.sidebar.button("Documents")
     st.sidebar.write("---")
-    st.sidebar.write("Settings")
+    st.sidebar.button("Settings")
 
 
 display_menu()
