@@ -2,6 +2,8 @@ import streamlit as st
 
 # Example Question List
 
+if 'components_list' not in st.session_state:
+    st.session_state.components_list = []
 
 # Question Type: text, multiple_checklist, single_checklist, discrete_scale
 # Text
@@ -61,7 +63,17 @@ test = render_question_list(ex_q_list)
 
 def add_question():
     q_text = st.text_input("Question")
-    q_type = st.selectbox("Question Type", ["Checklist", "Scale", ""])
+    type_selected = st.selectbox("Question Type", ["Checklist", "Scale", "Text"])
+    if type_selected == "Checklist":
+        q_type = "checklist"
+        st.button("Add Option")
+        st.checkbox("Allow Multiple Choices?")
+    elif type_selected == "Scale":
+        q_type = "scale"
+        min = st.text_input("Minimum Value")
+        max = st.text_input("Maximum Value")
+    elif type_selected == "Text":
+        q_type = 'text'
     return
 
 
@@ -78,6 +90,7 @@ def printsmt():
 
 
 st.button("Add Question", on_click=add_question)
+
 st.button("Save List", on_click=save_list)
 st.button("show_answers", on_click=printsmt)
 
