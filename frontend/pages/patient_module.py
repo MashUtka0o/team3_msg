@@ -81,7 +81,6 @@ def display_prescriptions(prescriptions):
     else:
         st.write("You don't have any prescriptions")
 
-
 def book_appointment(slots_taken, user_id):
     st.header("Book a New Appointment")
     appointment_id = generate_uid()
@@ -94,6 +93,8 @@ def book_appointment(slots_taken, user_id):
     files = st.file_uploader("Select files", type="pdf", accept_multiple_files=True)
     if 'files' not in st.session_state:
         st.session_state.files = []
+    if 'path' not in st.session_state:
+        st.session_state.path = None
     st.session_state.file_names = []
     if files:
         st.session_state.files.extend(files)
@@ -102,16 +103,14 @@ def book_appointment(slots_taken, user_id):
                 os.makedirs("tempDir")
             with open(os.path.join("tempDir", file.name), "wb") as f:
                 f.write(file.getbuffer())
-            path = os.path.abspath(os.path.join('tempDir', file.name))
-            attach_file_to_termin(appointment_id, path)
-
-
+            st.session_state.path = os.path.abspath(os.path.join('tempDir', file.name))
 
     if st.button("Book Appointment"):
         if 'file_names' not in st.session_state:
             st.session_state.file_names = []
         st.session_state.file_names = []
         for file in st.session_state.files:
+            attach_file_to_termin(appointment_id, st.session_state.path)
             st.session_state.file_names.append(file.name)
         st.session_state.files = []
         new_appointment = {
@@ -131,6 +130,8 @@ def book_appointment(slots_taken, user_id):
         st.success("Appointment booked successfully!")
         termin_creation(slot_id, user_id) #slot_id and pat_id
     st.session_state.files = []
+    st.session_state.file_names = []
+    st.session_state.path = None
 
 tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])
 
