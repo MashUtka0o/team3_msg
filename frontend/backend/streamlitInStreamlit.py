@@ -5,33 +5,16 @@ import streamlit as st
 if 'components_list' not in st.session_state:
     st.session_state.components_list = []
 
+
 # Question Type: text, multiple_checklist, single_checklist, discrete_scale
 # Text
-question1 = {"type": 'text', "question": "Why are you ge?"}
-# Checklist
-question2 = {"type": 'checklist',
-             "question": "How are you feeling today?",
-             "options": ["Good", "Bad", "I love beer"],
-             "single": True}
-question2_other = {"type": 'checklist',
-                   "question": "Choose?",
-                   "options": ["Happy", "Sad", "No", "Why"],
-                   "single": False}
-
-# Scale
-question3 = {"type": 'scale',
-             "question": "1-10?",
-             "scale": [1, 5]}
-
-ex_q_list = [question1, question2, question2_other, question3]
-
-curr_question_list = []
 
 
 def render_question(question):
     out = None
     q_type = question["type"]
     q_text = question["question"]
+    q_label = question["label"]
     if q_type == 'text':
         out = st.text_area(q_text)
     elif q_type == "checklist":
@@ -42,23 +25,21 @@ def render_question(question):
             out = []
             st.write(q_text)
             for option in question["options"]:
-                out.append(st.checkbox(option))
+                out.append([st.checkbox(option), option])
     elif q_type == "scale":
         scale = question["scale"]
         out = st.slider(q_text, scale[0], scale[1])
     else:
         print("Question Type Not Found")
-    return out
+    return q_label, out
 
 
 def render_question_list(question_list):
     answer_list = []
     for question in question_list:
         answer_list.append(render_question(question))
-    return answer_list
-
-
-test = render_question_list(ex_q_list)
+    answer_dict = {key: value for key, value in answer_list}
+    return answer_dict
 
 
 def add_question():
@@ -83,15 +64,5 @@ def render_questions_list(question_list):
 
 def save_list():
     return
-
-
-def printsmt():
-    st.write(test)
-
-
-st.button("Add Question", on_click=add_question)
-
-st.button("Save List", on_click=save_list)
-st.button("show_answers", on_click=printsmt)
 
 # Form Component Looks like this:

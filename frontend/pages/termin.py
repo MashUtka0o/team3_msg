@@ -3,6 +3,15 @@ import sqlite3
 
 # Date, Location, Doctor name, Summary, Documents?
 
+# Show Specific Termin:
+# Have: TerID
+# slotDate, locAddress, (docName, docSurname), summary, documents
+
+# Upload Documents:
+# Have: TerID
+# INSERT INTO documents a blob
+
+
 ex_termin = ("2024-06-25", "Max Mustermann", "Karlsruhe", None, "20489234", "abc@email.com")
 
 termin_key = st.session_state.termin_key

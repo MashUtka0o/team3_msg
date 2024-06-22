@@ -1,5 +1,17 @@
 import streamlit as st
 from datetime import datetime
+from backend import termin_manipulation
+
+# Notifications:
+# Have: patID
+# Get: ter
+
+# Appointments:
+# Have: patID
+# Get: terID, (docName, docSurname), slotDate, slotTime, locAddress
+
+# Thing
+
 
 # Sample data for notifications, appointments, and prescriptions
 notifications = [

@@ -1,33 +1,53 @@
 import streamlit as st
-
+from backend import streamlitInStreamlit as form_maker
 
 # Add Personal Information
 #
-def submit_form():
-    answers = {"location": location, "time": time, "desc_of_pain": [desc_of_pain, desc_extra], "event": event}
-    output = {"Personal Information": {},
-              "Answers": answers}
 
-    print(output)
+question1 = {"type": 'text', "question": "Why are you ge?", "label": "ge"}
+# Checklist
+question2 = {"type": 'checklist',
+             "question": "How are you feeling today?",
+             "options": ["Good", "Bad", "I love beer"],
+             "single": True,
+             "label": "feeling"}
+question2_other = {"type": 'checklist',
+                   "question": "Choose?",
+                   "options": ["Happy", "Sad", "No", "Why"],
+                   "single": False,
+                   "label": "choice"}
 
+# Scale
+question3 = {"type": 'scale',
+             "question": "1-10?",
+             "scale": [1, 5],
+             "label": "1-10"}
+ex_q_list = [question1, question2, question2_other, question3]
 
 st.write("Fragebogen Knie")
 
-location = st.radio("Wo sind ihre Schmerzen lokalisiert?",
-                    ["Innenseite", "Außenseite", "Weiß ich nicht"])
+out = form_maker.render_question_list(ex_q_list)
 
-time = st.radio("Wann haben die Schmerzen begonnen?", [
-    "1-3 Tagen", "4-7 Tagen", "bis 2 Wochen", "länger als 2 Wochen"])
+# location = st.radio("Wo sind ihre Schmerzen lokalisiert?",
+#                     ["Innenseite", "Außenseite", "Weiß ich nicht"])
+#
+# time = st.radio("Wann haben die Schmerzen begonnen?", [
+#     "1-3 Tagen", "4-7 Tagen", "bis 2 Wochen", "länger als 2 Wochen"])
+#
+# desc_of_pain = st.radio("Können Sie die Schmerzen beschreiben?", ["Stechen", "Brennen", "Weiß ich nicht"])
+#
+# if desc_of_pain == "Stechen":
+#     desc_extra = st.radio("Haben Sie Symptome wie Taubheit, Schwäche?", ["Ja", "Nein"])
+# else:
+#     desc_extra = None
+#
+# event = st.text_area("Können Sie ein Ereignis beschreiben, nachdem die Schmerzen aufgetreten sind")
 
-desc_of_pain = st.radio("Können Sie die Schmerzen beschreiben?", ["Stechen", "Brennen", "Weiß ich nicht"])
-
-if desc_of_pain == "Stechen":
-    desc_extra = st.radio("Haben Sie Symptome wie Taubheit, Schwäche?", ["Ja", "Nein"])
-else:
-    desc_extra = None
-
-event = st.text_area("Können Sie ein Ereignis beschreiben, nachdem die Schmerzen aufgetreten sind")
-
-st.button(label="Submit", on_click=submit_form)
+if st.button(label="Submit"):
+    answers = out
+    print(answers)
+    output = {"Personal Information": {},
+              "Answers": answers}
+    print(output)
 
 # Every form must have a submit button.
