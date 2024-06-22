@@ -1,87 +1,46 @@
 import json
 import streamlit as st
-from backend.fragenbogen_generator import generate_followup_questions
+from fragenbogen_generator import generate_questions, generate_options
+
 
 st.title("Patient-Oriented Fragebogen")
 
-def reset_fragebogen():
+if "fragebogen" not in st.session_state:
     st.session_state.fragebogen = {
-        "purpose_of_visit": "",
-        "pain_location": "",
-        "pain_type": "",
-        "pain_scale": 0,
-        "followup_questions": {},
-        "control_answers": {}
+        "initial_response": "",
+        "deep_questions": {},
+        "general_questions": {}
     }
     st.session_state.current_step = "initial_response"
-    st.session_state.followup_questions = []
-    st.session_state.qa_overview = []
-
-if "fragebogen" not in st.session_state:
-    reset_fragebogen()
-
-if st.button("Reset Fragebogen"):
-    reset_fragebogen()
-    st.experimental_rerun()
 
 if st.session_state.current_step == "initial_response":
-    st.header("What can I help you with today?")
-    purpose_of_visit = st.selectbox("What is the purpose of your visit today?", ["Acute pain", "Control"])
-    st.session_state.fragebogen["purpose_of_visit"] = purpose_of_visit
-    if purpose_of_visit == "Control":
-        st.session_state.control_questions = [
-            "How have you been since your last treatment?",
-            "Any new symptoms or concerns?",
-            "Are you taking your medications as prescribed?",
-            "When was your last visit?",
-            "Any side effects from the treatment?"
-        ]
-        st.session_state.current_step = "control_questions"
-    else:
-        st.session_state.current_step = "pain_details"
+    st.header("Initial Response")
+    initial_response = st.text_input("Patient: What can I help you with today?")
+    if st.button("Submit"):
+        st.session_state.fragebogen["initial_response"] = initial_response
+        st.session_state.deep_questions, st.session_state.general_questions = generate_questions(initial_response)
+        st.session_state.current_step = "deep_questions"
 
-elif st.session_state.current_step == "pain_details":
-    st.header("Pain Details")
-    pain_location = st.text_input("Where is the pain located?")
-    pain_type = st.selectbox("What type of pain are you experiencing?", ["Sharp", "Dull", "Throbbing", "Burning", "Other"])
-    pain_scale = st.slider("On a scale of 1 to 10, how would you rate your pain?", 1, 10)
-    
-    if st.button("Submit Pain Details"):
-        st.session_state.fragebogen["pain_location"] = pain_location
-        st.session_state.fragebogen["pain_type"] = pain_type
-        st.session_state.fragebogen["pain_scale"] = pain_scale
-        st.session_state.qa_overview.append(("Pain Location", pain_location))
-        st.session_state.qa_overview.append(("Pain Type", pain_type))
-        st.session_state.qa_overview.append(("Pain Scale", pain_scale))
-        
-        # Generate follow-up questions using LLM
-        followup_questions = generate_followup_questions(pain_location, pain_type, pain_scale)
-        st.session_state.followup_questions = followup_questions
-        st.session_state.current_step = "followup_questions"
-
-elif st.session_state.current_step == "followup_questions":
-    st.header("Follow-up Questions")
-    for i, question in enumerate(st.session_state.followup_questions):
+elif st.session_state.current_step == "deep_questions":
+    st.header("Deep Questions")
+    for i, question in enumerate(st.session_state.deep_questions):
         st.subheader(f"Question {i+1}: {question}")
-        answer = st.text_area(f"Answer for Question {i+1}", key=f"followup_{i}")
-        st.session_state.fragebogen["followup_questions"][question] = answer
-        st.session_state.qa_overview.append((question, answer))
+        options = generate_options(question)
+        answer = st.multiselect(f"Select answers for Question {i+1}", options)
+        st.session_state.fragebogen["deep_questions"][question] = answer
 
-    if st.button("Finish and Save"):
-        with open("fragebogen.json", "w") as f:
-            json.dump(st.session_state.fragebogen, f, indent=4)
-        st.success("Fragebogen saved successfully!")
-        st.session_state.current_step = "completed"
+    if st.button("Next"):
+        st.session_state.current_step = "general_questions"
 
-elif st.session_state.current_step == "control_questions":
-    st.header("Control Visit Questions")
-    for i, question in enumerate(st.session_state.control_questions):
+elif st.session_state.current_step == "general_questions":
+    st.header("General Questions")
+    for i, question in enumerate(st.session_state.general_questions):
         st.subheader(f"Question {i+1}: {question}")
-        answer = st.text_area(f"Answer for Question {i+1}", key=f"control_{i}")
-        st.session_state.fragebogen["control_answers"][question] = answer
-        st.session_state.qa_overview.append((question, answer))
+        options = generate_options(question)
+        answer = st.multiselect(f"Select answers for Question {i+1}", options)
+        st.session_state.fragebogen["general_questions"][question] = answer
 
-    if st.button("Finish and Save"):
+    if st.button("Finish"):
         with open("fragebogen.json", "w") as f:
             json.dump(st.session_state.fragebogen, f, indent=4)
         st.success("Fragebogen saved successfully!")
@@ -90,14 +49,3 @@ elif st.session_state.current_step == "control_questions":
 elif st.session_state.current_step == "completed":
     st.header("Fragebogen Completed")
     st.write("Thank you for completing the questionnaire. The data has been saved.")
-
-
-# Display the Q/A overview section
-if st.session_state.qa_overview:
-    st.header("Q/A Overview")
-    for q, a in st.session_state.qa_overview:
-        st.write(f"**Q: {q}**")
-        if isinstance(a, list):
-            st.write(f"**A:** {', '.join(a)}")
-        else:
-            st.write(f"**A:** {a}")
