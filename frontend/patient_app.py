@@ -1,8 +1,10 @@
 import streamlit as st
 from datetime import datetime
 
+st.header("Code&Create Group 3")
+
 notifications = ["Your appointment with Dr. Smith is confirmed for tomorrow.",
-                 "You have a new prescription from Dr. Brown."] # sample data, later change to data from db
+                 "You have a new prescription from Dr. Brown."]  # sample data, later change to data from db
 
 if 'appointments' not in st.session_state:
     st.session_state.appointments = [
@@ -18,6 +20,7 @@ prescriptions = [
                                                                                             "the food."}
 ]
 
+
 def display_notifications(notifications):
     st.sidebar.header("Notifications")
     if notifications:
@@ -25,6 +28,7 @@ def display_notifications(notifications):
             st.sidebar.write(f"- {note}")
     else:
         st.sidebar.write("No new notifications")
+
 
 def display_appointments(appointments):
     st.header("Your Appointments")
@@ -37,6 +41,7 @@ def display_appointments(appointments):
     else:
         st.write("No upcoming appointments")
 
+
 def display_prescriptions(prescriptions):
     st.header("Your Preinscriptions")
     if prescriptions:
@@ -47,33 +52,37 @@ def display_prescriptions(prescriptions):
             st.write("---")
     else:
         st.write("You don't have any prescriptions")
+
+
 def book_appointment():
     st.header("Book a New Appointment")
-    location = st.multiselect("Location: ",
-    ("All", "Karlsruhe", "Deggendorf", "Berkin"),
-               default="All")
-    doctor_type = st.multiselect("Doctor type: ",
-                   ("All", "General Practice", "Surgeon", "Psychotherapist"),
-                   default="All")
+    c1, c2 = st.columns(2)
+    with c1:
+        location = st.multiselect("Location: ",
+                                  ("All", "Karlsruhe", "Deggendorf", "Berkin"), placeholder="Search For Location")
+    with c2:
+        doctor_type = st.multiselect("Doctor type: ",
+                                     ("All", "General Practice", "Surgeon", "Psychotherapist"),
+                                     placeholder="Search for Doctor")
     doctor = st.multiselect("Doctor: ",
-                   ("All", "Marina Schultz", "John Smith"),
-                   default="All")
+                            ("All", "Marina Schultz", "John Smith"), )
     date = st.date_input("Select Date")
     time = st.time_input("Select Time")
     if st.button("Book Appointment"):
-        new_appointment = {"location": location, "doctor type": doctor_type, "doctor": doctor, "date": date.strftime("%Y-%m-%d"), "time": time.strftime("%I:%M %p")}
+        new_appointment = {"location": location, "doctor type": doctor_type, "doctor": doctor,
+                           "date": date.strftime("%Y-%m-%d"), "time": time.strftime("%I:%M %p")}
         st.session_state.appointments.append(new_appointment)
         st.success("Appointment booked successfully!")
         st.experimental_rerun()
 
+
 tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])
 
 with tab1:
-    display_appointments(st.session_state.appointments)
     book_appointment()
+    display_appointments(st.session_state.appointments)
 
 with tab2:
     display_prescriptions(prescriptions)
-
 
 display_notifications(notifications)
