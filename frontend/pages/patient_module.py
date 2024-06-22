@@ -10,6 +10,12 @@ from backend import termin_manipulation
 # Have: patID
 # Get: terID, (docName, docSurname), slotDate, slotTime, locAddress
 
+data = termin_manipulation.get_one_patient(1)[0]
+
+patient_data = {"name": data[0],
+                "nachname": data[1],
+                "dob": data[2]}
+print(patient_data)
 
 appointment_list = termin_manipulation.get_pat_termin(1)
 location_list = termin_manipulation.get_loc()
@@ -108,6 +114,7 @@ def book_appointment():
     else:
         st.write("No Doctor Found")
 
+
 tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])
 
 with tab1:
@@ -120,6 +127,7 @@ with tab2:
 back = st.button("Back to Home Page")
 if back:
     st.switch_page("./home_page.py")
+
 
 def display_menu():
     st.sidebar.title("Menu")

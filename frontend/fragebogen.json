@@ -1,13 +1,16 @@
 {
     "purpose_of_visit": "Acute pain",
-    "pain_location": "soul",
+    "pain_location": "",
     "pain_type": "Sharp",
-    "pain_scale": 10,
+    "pain_scale": 1,
     "followup_questions": {
-        "\"Wie lange dauert jede einzelne Schmerzepisode?\",": "1000 years",
-        "\"Wie oft tritt der Schmerz auf?\",": "once per milisecond",
-        "\"Gibt es bestimmte Aktivit\u00e4ten oder Situationen, die den Schmerz verschlimmern?\",": "living",
-        "\"Gibt es irgendwelche Ma\u00dfnahmen, die Sie ergriffen haben und die den Schmerz linderten?\",": "no"
+        "\"Wo genau befindet sich der Schmerz?\",": "df",
+        "\"Beschreiben Sie den Schmerz genauer - ist er st\u00e4ndig vorhanden oder tritt er in Sch\u00fcben auf?\",": "fdb",
+        "\"Haben Sie andere Symptome au\u00dfer dem Schmerz bemerkt?\",": "fdf",
+        "\"Gab es vor kurzem eine Ver\u00e4nderung in Ihrem Lebensstil oder Ihrer Ern\u00e4hrung, die zu diesem Schmerz gef\u00fchrt haben k\u00f6nnte?\",": "ered"
     },
-    "control_answers": {}
+    "control_answers": {},
+    "name": "Anna",
+    "nachname": "Schmidt",
+    "dob": "1987-04-12"
 }

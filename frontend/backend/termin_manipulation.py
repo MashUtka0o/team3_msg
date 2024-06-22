@@ -63,6 +63,26 @@ def get_doc_termin(doc_id):
     return
 
 
+def get_one_patient(patient_id):
+    try:
+        sqliteConnection = sqlite3.connect("./backend/Test.db")
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+        query = """SELECT name, surname, dateOfBirth FROM Patients WHERE patID = (?)"""
+        cursor.execute(query, str(patient_id))
+        sqliteConnection.commit()
+        rows = cursor.fetchall()
+        cursor.close()
+        return rows
+    except sqlite3.Error as error:
+        print("Failed to Get Table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("the sqlite connection is closed")
+    return
+
+
 def get_free_slots(location, doctor):
     try:
         sqliteConnection = sqlite3.connect("./backend/Test.db")
