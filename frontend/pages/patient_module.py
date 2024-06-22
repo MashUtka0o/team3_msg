@@ -1,7 +1,7 @@
 import streamlit as st
-from datetime import datetime
+import time
 from frontend.backend.termin_manipulation import termin_creation, attach_file_to_termin
-import uuid
+import random
 import os
 
 # Sample data for notifications, appointments, and prescriptions
@@ -28,6 +28,11 @@ prescriptions = [
 slots_taken = [1, 2, 45, 23]
 user_id = 3452
 
+def generate_uid():
+    random_int = random.randint(1, 1000000)
+    timestamp = int(time.time() * 1000)  # Current time in milliseconds
+    id = (timestamp << 20) | random_int  # Shift timestamp and combine with random int
+    return id
 def display_notifications(notifications):
     with st.expander("Notifications: ", expanded=True): #st.sidebar.header
         if notifications:
@@ -61,8 +66,6 @@ def display_appointments(appointments):
                 st.session_state.termin_key = appointment['id']
                 st.switch_page("./pages/termin.py")
             st.write("---")
-
-
     else:
         st.write("No upcoming appointments")
 
@@ -81,16 +84,17 @@ def display_prescriptions(prescriptions):
 
 def book_appointment(slots_taken, user_id):
     st.header("Book a New Appointment")
-    appointment_id = uuid.uuid1()
-    location = st.multiselect("Location:", ["All", "Karlsruhe", "Deggendorf", "Berlin"], default="All")
-    doctor_type = st.multiselect("Doctor type:", ["All", "General Practice", "Surgeon", "Psychotherapist"],
-                                 default="All")
-    doctor = st.multiselect("Doctor:", ["All", "Marina Schultz", "John Smith"], default="All")
+    appointment_id = generate_uid()
+    location = st.selectbox("Location:", ["All", "Karlsruhe", "Deggendorf", "Berlin"], index=0)
+    doctor_type = st.selectbox("Doctor type:", ["All", "General Practice", "Surgeon", "Psychotherapist"],
+                                 index=0)
+    doctor = st.selectbox("Doctor:", ["All", "Marina Schultz", "John Smith"], index=0)
     date = st.date_input("Select Date")
     time = st.time_input("Select Time")
     files = st.file_uploader("Select files", type="pdf", accept_multiple_files=True)
     if 'files' not in st.session_state:
         st.session_state.files = []
+    st.session_state.file_names = []
     if files:
         st.session_state.files.extend(files)
         for file in st.session_state.files:
@@ -100,9 +104,16 @@ def book_appointment(slots_taken, user_id):
                 f.write(file.getbuffer())
             path = os.path.abspath(os.path.join('tempDir', file.name))
             attach_file_to_termin(appointment_id, path)
-        print(f"Files: {st.session_state.files}")
+
+
 
     if st.button("Book Appointment"):
+        if 'file_names' not in st.session_state:
+            st.session_state.file_names = []
+        st.session_state.file_names = []
+        for file in st.session_state.files:
+            st.session_state.file_names.append(file.name)
+        st.session_state.files = []
         new_appointment = {
             "location": location,
             "doctor type": doctor_type,
@@ -110,17 +121,16 @@ def book_appointment(slots_taken, user_id):
             "date": date.strftime("%Y-%m-%d"),
             "time": time.strftime("%I:%M %p"),
             "summary": " ",
-            "files": st.session_state.files,
+            "files": st.session_state.file_names,
             "id": appointment_id
         }
-        st.session_state.files = []
-        slot_id = uuid.uuid1()
+        st.session_state.file_names = []
+        slot_id = generate_uid()
         slots_taken.append(slot_id)
         st.session_state.appointments.append(new_appointment)
         st.success("Appointment booked successfully!")
         termin_creation(slot_id, user_id) #slot_id and pat_id
-        print(f"Files2: {st.session_state.files}")
-        st.experimental_rerun()
+    st.session_state.files = []
 
 tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])
 

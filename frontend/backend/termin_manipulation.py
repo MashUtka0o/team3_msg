@@ -1,6 +1,5 @@
 import sqlite3
 
-
 def termin_creation(slot_id, pat_id):
     try:
         sqliteConnection = sqlite3.connect('Test.db')

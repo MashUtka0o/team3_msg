@@ -1,0 +1,37 @@
+{
+  "personal_information": {
+    "name": "John Doe",
+    "birth_date": "1975-05-15",
+    "gender": "Male",
+    "address": "Doe Street 5, 67890 Doe Town",
+    "phone": "09876-543210",
+    "email": "john.doe@example.com"
+  },
+  "medical_history": {
+    "main_reason": "Headache",
+    "complaint_start_date": "2024-07-01",
+    "complaint_onset": "Gradually",
+    "previous_similar_complaints": false,
+    "previous_treatments": "Painkillers",
+    "current_medications": "Aspirin"
+  },
+  "pain_details": {
+    "pain_scale": 5,
+    "pain_location": ["Head"],
+    "pain_timing": ["Evening"],
+    "pain_relief": "Rest, Cold compress",
+    "pain_worsening": "Stress, Loud noises"
+  },
+  "mobility_and_function": {
+    "daily_activity_problems": "No",
+    "walking_distance": "More than 500 meters",
+    "mobility_aids": "None"
+  },
+  "additional_health_information": {
+    "allergies": "Peanuts",
+    "chronic_diseases": "Hypertension",
+    "smoking": "No",
+    "alcohol": "No"
+  },
+  "additional_notes": "Patient has been advised to manage stress levels."
+}
