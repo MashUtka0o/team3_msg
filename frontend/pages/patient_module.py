@@ -37,7 +37,11 @@ def display_appointments(appointments):
             st.write(f"**Doctor**: {appointment['doctor']}")
             st.write(f"**Date**: {appointment['date']}")
             st.write(f"**Time**: {appointment['time']}")
+            if st.button(key=appointment, label="See More"):
+                st.session_state.termin_key = 12345
+                st.switch_page("./pages/termin.py")
             st.write("---")
+
 
     else:
         st.write("No upcoming appointments")
@@ -81,8 +85,8 @@ display_notifications(notifications)
 tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])
 
 with tab1:
-    display_appointments(st.session_state.appointments)
     book_appointment()
+    display_appointments(st.session_state.appointments)
 
 with tab2:
     display_prescriptions(prescriptions)

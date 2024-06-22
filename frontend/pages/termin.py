@@ -5,9 +5,12 @@ import sqlite3
 
 ex_termin = ("2024-06-25", "Max Mustermann", "Karlsruhe", None, "20489234", "abc@email.com")
 
+termin_key = st.session_state.termin_key
+
 
 def open_termin(termin):
     st.header("Termininformationen")
+    st.write(termin_key)
     date = st.write("Date: " + termin[0])
     info = st.write(termin[1] + ", " + termin[2])
     summary = termin[3]
