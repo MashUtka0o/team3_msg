@@ -4,15 +4,20 @@ from frontend.backend.termin_manipulation import termin_cancelation
 
 # Date, Location, Doctor name, Summary, Documents?
 termin_key = st.session_state.termin_key
+print(f"termin key: {termin_key}")
 termin_info = [appointment for appointment in st.session_state.appointments if appointment['id']==termin_key]
 termin_info = termin_info[0]
 
 def open_termin(termin):
     st.header("Appointment Information")
+    print(f"Termin info: {termin}")
     st.write(termin_key)
     date = st.write(f"Date: {termin['date']}")
     time = st.write(f"Time:  {termin['time']}")
     doctor = st.write(f"Doctor:  {termin['doctor']}")
+    st.write("Files: ")
+    for file in termin['files']:
+        st.write(file)
     summary = None
     if summary is None:
         st.write(":red[Form not Filled, Please Fill Form]")

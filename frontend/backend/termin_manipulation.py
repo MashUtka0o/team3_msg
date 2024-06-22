@@ -1,9 +1,9 @@
 import sqlite3
-
+from os import getcwd
 
 def termin_creation(slot_id, pat_id):
     try:
-        sqliteConnection = sqlite3.connect('Test.db')
+        sqliteConnection = sqlite3.connect('frontend/backend/Test.db')
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
@@ -33,7 +33,7 @@ def termin_creation(slot_id, pat_id):
 
 def termin_cancelation(termID):
     try:
-        sqliteConnection = sqlite3.connect('Test.db')
+        sqliteConnection = sqlite3.connect('frontend/backend/Test.db')
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
@@ -62,7 +62,7 @@ def convertToBinaryData(filename):
 
 def insert_summary(patID, slotID, status, summary_path):
     try:
-        sqliteConnection = sqlite3.connect('Test.db')
+        sqliteConnection = sqlite3.connect('frontend/backend/Test.db')
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
         sqlite_insert_blob_query = """ INSERT INTO Termins
@@ -85,7 +85,7 @@ def insert_summary(patID, slotID, status, summary_path):
 
 def create_prescription(termID, type, **kwargs):
     try:
-        sqliteConnection = sqlite3.connect('Test.db')
+        sqliteConnection = sqlite3.connect('frontend/backend/Test.db')
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
@@ -123,13 +123,17 @@ def create_prescription(termID, type, **kwargs):
 
 
 def attach_file_to_termin(termID, file_path):
+    current_dir = getcwd()
+    db_path = f'{current_dir}/Test.db'
     try:
-        sqliteConnection = sqlite3.connect('Test.db')
+        sqliteConnection = sqlite3.connect("frontend/backend/Test.db")
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
 
         file = convertToBinaryData(file_path)
         cursor.execute(""" INSERT INTO TerminAttachedFiles(termID, file) VALUES (?, ?)""", (termID, file))
+        #cursor.execute(""" SELECT * FROM TerminAttachedFiles """)
+        print(cursor.fetchall())
 
         sqliteConnection.commit()
         print("File inserted successfully as a BLOB into a table")
@@ -141,3 +145,19 @@ def attach_file_to_termin(termID, file_path):
         if sqliteConnection:
             sqliteConnection.close()
             print("the sqlite connection is closed")
+
+def show_all_the_tables():
+    sqliteConnection = sqlite3.connect('Test.db')
+    cursor = sqliteConnection.cursor()
+    print("Hello to SQLite")
+
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
+
+    for table in tables:
+        print(table[0])
+
+    sqliteConnection.close()
+
+#show_all_the_tables()
+#attach_file_to_termin(1, "DB structure.pdf")
