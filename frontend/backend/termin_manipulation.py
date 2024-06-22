@@ -1,6 +1,6 @@
 import sqlite3
+from os import getcwd
 import datetime
-
 
 def termin_creation(slot_id, pat_id):
     try:
@@ -84,7 +84,6 @@ def insert_summary(patID, slotID, status, summary_path):
             sqliteConnection.close()
             print("the sqlite connection is closed")
 
-
 def create_prescription(termID, type, **kwargs):
     try:
         sqliteConnection = sqlite3.connect('frontend/backend/Test.db')
@@ -149,7 +148,6 @@ def attach_file_to_termin(termID, file_path):
         if sqliteConnection:
             sqliteConnection.close()
             print("the sqlite connection is closed")
-
 
 def show_all_the_tables():
     sqliteConnection = sqlite3.connect('Test.db')

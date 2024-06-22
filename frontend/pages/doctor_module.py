@@ -35,7 +35,6 @@ patients_of_the_day = [
 if "selected_patient" not in st.session_state:
     st.session_state.selected_patient = None
 
-
 def display_overview():
     st.subheader("Overview of the Day")
     start_time = datetime.strptime("08:00", "%H:%M")
@@ -58,14 +57,12 @@ def display_overview():
         else:
             st.write(f"{slot} - Free")
 
-
 def display_patient_list():
     st.subheader("Patients of the Day")
     for idx, patient in enumerate(patients_of_the_day):
         st.write(f"**{patient['name']}** - Insurance Number: {patient['insurance_number']}")
         if st.button(f"View {patient['name']}"):
             st.session_state.selected_patient = idx
-
 
 def display_patient_details(patient):
     # Load patient data from the selected file
@@ -104,7 +101,6 @@ def display_patient_details(patient):
         bio_sensor_data = get_dummy_bio_sensor_data()
         st.subheader("Sport Activity Last Month")
         st.line_chart(bio_sensor_data['sport_activity'])
-
         st.subheader("Heart Beat History Over Month")
         st.line_chart(bio_sensor_data['heart_beat_history'])
 
@@ -124,7 +120,6 @@ def display_patient_details(patient):
         st.write(f"**Address**: {patient_data['personal_information']['address']}")
         st.write(f"**Phone**: {patient_data['personal_information']['phone']}")
         st.write(f"**Email**: {patient_data['personal_information']['email']}")
-
 
 # Main application logic
 if st.session_state.selected_patient is None:

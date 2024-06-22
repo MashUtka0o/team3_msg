@@ -5,7 +5,6 @@ import streamlit as st
 if 'components_list' not in st.session_state:
     st.session_state.components_list = []
 
-
 # Question Type: text, multiple_checklist, single_checklist, discrete_scale
 # Text
 
