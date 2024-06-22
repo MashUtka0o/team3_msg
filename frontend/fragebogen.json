@@ -1,0 +1,16 @@
+{
+    "purpose_of_visit": "Acute pain",
+    "pain_location": "bauch",
+    "pain_type": "Throbbing",
+    "pain_scale": 6,
+    "followup_questions": {
+        "\"Wo genau befindet sich das pulsierende Schmerz im Bauchbereich?\",": "",
+        "\"Breitet sich der Schmerz aus oder bleibt er konstant an einer Stelle?\",": "kool",
+        "\"\u00c4ndern sich die Schmerzen in Abh\u00e4ngigkeit von Ihrer Position oder T\u00e4tigkeit?\",": "",
+        "\"Gibt es bestimmte Aktivit\u00e4ten oder Faktoren, die den Schmerz verschlimmern oder verbessern?\",": ""
+    },
+    "control_answers": {},
+    "name": "Anna",
+    "nachname": "Schmidt",
+    "dob": "1987-04-12"
+}
