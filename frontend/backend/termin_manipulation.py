@@ -4,7 +4,7 @@ import datetime
 
 def get_pat_termin(pat_id):
     try:
-        sqliteConnection = sqlite3.connect("Test.db")
+        sqliteConnection = sqlite3.connect("./backend/Test.db")
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
         query = """SELECT termID, docName, docSurname, slotDate, slotTime,locAddress FROM TerminInfo WHERE patID = (?) AND status = 1"""

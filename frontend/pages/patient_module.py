@@ -10,13 +10,14 @@ from backend import termin_manipulation
 # Have: patID
 # Get: terID, (docName, docSurname), slotDate, slotTime, locAddress
 
-# Thing
-
+appointment_list = termin_manipulation.get_pat_termin(1)
+appointment_list = list(dict.fromkeys(appointment_list))
+print(appointment_list)
 
 # Sample data for notifications, appointments, and prescriptions
 if 'notifications' not in st.session_state:
     st.session_state.notifications = ["Your appointment with Dr. Smith is confirmed for tomorrow.",
-                     "You have a new prescription from Dr. Brown."]
+                                      "You have a new prescription from Dr. Brown."]
 
 if 'checked_notifications' not in st.session_state:
     st.session_state.checked_notifications = [False] * len(st.session_state.notifications)
@@ -36,19 +37,23 @@ prescriptions = [
 
 
 def display_notifications(notifications):
-    with st.expander("Notifications: ", expanded=True): #st.sidebar.header
+    with st.expander("Notifications: ", expanded=True):  # st.sidebar.header
         if notifications:
             for idx, note in enumerate(notifications):
-                checked = st.checkbox(f"{note}" if not st.session_state.checked_notifications[idx] else f"~~{note}~~", key=f"notification_{idx}", value=st.session_state.checked_notifications[idx])
+                checked = st.checkbox(f"{note}" if not st.session_state.checked_notifications[idx] else f"~~{note}~~",
+                                      key=f"notification_{idx}", value=st.session_state.checked_notifications[idx])
                 if checked != st.session_state.checked_notifications[idx]:
                     st.session_state.checked_notifications[idx] = checked
                     st.experimental_rerun()
         else:
             st.write("No new notifications")
 
+
 def update_notifications():
-    st.session_state.notifications = [note for idx, note in enumerate(st.session_state.notifications) if not st.session_state.checked_notifications[idx]]
+    st.session_state.notifications = [note for idx, note in enumerate(st.session_state.notifications) if
+                                      not st.session_state.checked_notifications[idx]]
     st.session_state.checked_notifications = [False] * len(st.session_state.notifications)
+
 
 display_notifications(st.session_state.notifications)
 
@@ -60,15 +65,15 @@ if st.button("Update notifications"):
 def display_appointments(appointments):
     st.header("Your Appointments")
     if appointments:
-        for appointment in appointments:
-            st.write(f"**Doctor**: {appointment['doctor']}")
-            st.write(f"**Date**: {appointment['date']}")
-            st.write(f"**Time**: {appointment['time']}")
-            if st.button(key=appointment, label="See More"):
-                st.session_state.termin_key = 12345
+        for appointment in appointment_list:
+            st.write(f"**Doctor**: {appointment[1]} {appointment[2]}")
+            st.write(f"**Date**: {appointment[3]}")
+            st.write(f"**Time**: {appointment[4]}")
+            if st.button(key=appointment[0], label="See More"):
+                st.session_state.termin_key = appointment[0]
                 st.switch_page("./pages/termin.py")
             st.write("---")
-
+        
 
     else:
         st.write("No upcoming appointments")
@@ -119,6 +124,7 @@ with tab2:
 back = st.button("Back to Home Page")
 if back:
     st.switch_page("./home_page.py")
+
 
 def display_menu():
     st.sidebar.title("Menu")
