@@ -7,7 +7,7 @@ def get_pat_termin(pat_id):
         sqliteConnection = sqlite3.connect("Test.db")
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
-        query = """SELECT termID FROM TerminInfo WHERE patID = (?) AND status = 0"""
+        query = """SELECT termID, docName, docSurname, slotDate, slotTime,locAddress FROM TerminInfo WHERE patID = (?) AND status = 1"""
         cursor.execute(query, str(pat_id))
         sqliteConnection.commit()
         rows = cursor.fetchall()
@@ -19,9 +19,6 @@ def get_pat_termin(pat_id):
         if sqliteConnection:
             sqliteConnection.close()
             print("the sqlite connection is closed")
-
-
-print(get_pat_termin(2))
 
 
 def get_free_slots(doc_id):
