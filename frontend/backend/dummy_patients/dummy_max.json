@@ -1,0 +1,37 @@
+{
+  "personal_information": {
+    "name": "Max Mustermann",
+    "birth_date": "1980-01-01",
+    "gender": "Male",
+    "address": "Musterstraße 1, 12345 Musterstadt",
+    "phone": "01234-567890",
+    "email": "max.mustermann@example.com"
+  },
+  "medical_history": {
+    "main_reason": "Pain",
+    "complaint_start_date": "2024-06-01",
+    "complaint_onset": "Suddenly",
+    "previous_similar_complaints": true,
+    "previous_treatments": "Physical therapy and painkillers",
+    "current_medications": "Ibuprofen"
+  },
+  "pain_details": {
+    "pain_scale": 7,
+    "pain_location": ["Back", "Knee"],
+    "pain_timing": ["Morning", "During movement"],
+    "pain_relief": "Rest, Heat treatment",
+    "pain_worsening": "Movement, Cold"
+  },
+  "mobility_and_function": {
+    "daily_activity_problems": "Yes, climbing stairs and sitting for long periods",
+    "walking_distance": "100-500 meters",
+    "mobility_aids": "None"
+  },
+  "additional_health_information": {
+    "allergies": "None",
+    "chronic_diseases": "None",
+    "smoking": "No",
+    "alcohol": "Yes, occasionally"
+  },
+  "additional_notes": "None"
+}
