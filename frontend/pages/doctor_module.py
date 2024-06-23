@@ -6,6 +6,7 @@ import streamlit as st
 from PIL import Image
 from backend.summary_generator import MedicalReportGenerator
 from backend.bio_sensor_data import get_dummy_bio_sensor_data
+from pathlib import Path
 
 load_dotenv()
 # Fetch configuration variables from environment variables
@@ -33,7 +34,8 @@ patients_of_the_day = [
 
 # load fragenbogen dynamic for a demo patient (new created)
 print(os.getcwd())
-fragenbogen_generated_path = "./backend/fragebogen.json"
+fragenbogen_generated_path = Path("./backend/fragebogen.json")
+print(fragenbogen_generated_path)
 with open(fragenbogen_generated_path, "r") as file2:
     demo_patient_data = json.load(file2)
 
