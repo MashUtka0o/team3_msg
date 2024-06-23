@@ -4,6 +4,7 @@ from langchain import PromptTemplate
 from langchain.chat_models import AzureChatOpenAI
 from langchain.schema import HumanMessage
 
+
 class MedicalReportGenerator:
     def __init__(self, api_version, endpoint, api_key, deployment_name):
         self.api_version = api_version
@@ -81,12 +82,12 @@ class MedicalReportGenerator:
 
             Additional Notes:
             - {additional_notes}
+            Only Return a Summary in PARAGRAPH form, format it with new lines
         """
 
         custom_prompt = PromptTemplate(template=custom_prompt_template, input_variables=list(patient_data_flat.keys()))
         message_content = custom_prompt.format(**patient_data_flat)
         messages = [HumanMessage(content=message_content)]
         response = self.llm(messages=messages)
-        
-        return response.content
 
+        return response.content

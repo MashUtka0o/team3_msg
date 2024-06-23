@@ -1,13 +1,13 @@
 {
     "purpose_of_visit": "Acute pain",
-    "pain_location": "bauch",
-    "pain_type": "Throbbing",
-    "pain_scale": 6,
+    "pain_location": "fdfg",
+    "pain_type": "Sharp",
+    "pain_scale": 1,
     "followup_questions": {
-        "\"Wo genau befindet sich das pulsierende Schmerz im Bauchbereich?\",": "",
-        "\"Breitet sich der Schmerz aus oder bleibt er konstant an einer Stelle?\",": "kool",
-        "\"\u00c4ndern sich die Schmerzen in Abh\u00e4ngigkeit von Ihrer Position oder T\u00e4tigkeit?\",": "",
-        "\"Gibt es bestimmte Aktivit\u00e4ten oder Faktoren, die den Schmerz verschlimmern oder verbessern?\",": ""
+        "\"K\u00f6nnen Sie die Art dieses scharfen Schmerzes genauer beschreiben?\",": "",
+        "\"Bestehen zus\u00e4tzlich zu diesem scharfen Schmerz noch andere Symptome?\",": "",
+        "\"Haben Sie irgendetwas getan oder genommen, als Sie den Schmerz das erste Mal bemerkten? Wenn ja, was haben Sie getan/genommen und wie hat es sich auf den Schmerz ausgewirkt?\",": "",
+        "\"Bemerken Sie, ob irgendwelche Aktivit\u00e4ten oder Faktoren den Schmerz verst\u00e4rken oder lindern?\",": ""
     },
     "control_answers": {},
     "name": "Anna",

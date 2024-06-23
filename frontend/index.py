@@ -14,7 +14,8 @@ if st.sidebar.button("Home"):
     st.switch_page("./home_page.py")
 
 pg = st.navigation([st.Page("./home_page.py"), st.Page("./pages/termin.py"), st.Page("./pages/fragebogen.py"),
-                    st.Page("./pages/patient_module.py"), st.Page("./pages/doctor_module.py")],
+                    st.Page("./pages/patient_module.py"), st.Page("./pages/doctor_module.py"),
+                    st.Page("./pages/doc_termin.py")],
                    position='hidden')
 
 pg.run()

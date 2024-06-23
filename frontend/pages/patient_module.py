@@ -78,13 +78,15 @@ if st.button("Update notifications"):
     st.experimental_rerun()
 
 
+# termID, patName, patSurname, slotDate, slotTime, locAddress
 def display_appointments(appointments):
     st.header("Your Appointments")
     if appointments:
         for appointment in appointments:
-            st.write(f"**Doctor**: {appointment[1]} {appointment[2]}")
+            st.write(f"**Doctor:**: {appointment[1]} {appointment[2]}")
             st.write(f"**Date**: {appointment[3]}")
             st.write(f"**Time**: {appointment[4]}")
+            st.write(f"**Location**: {appointment[5]}")
             if st.button(key=appointment[0], label="See More"):
                 st.session_state.termin_key = appointment[0]
                 st.switch_page("./pages/termin.py")
@@ -108,7 +110,6 @@ def display_prescriptions(prescriptions):
 def book_appointment():
     global appointment_list
     st.header("Book a New Appointment")
-    appointment_id = generate_uid()
     location = st.multiselect("Location:", location_list)
     doctor_type = st.multiselect("Doctor type:", doc_type_list)
     doc_list = termin_manipulation.get_doc(doctor_type)
@@ -134,9 +135,7 @@ def book_appointment():
                     f.write(file.getbuffer())
                 st.session_state.path = os.path.abspath(os.path.join('tempDir', file.name))
         if st.button("Book Appointment"):
-            print("Fuck You")
-            print(slots[0])
-            termin_creation(slots[0], 1)
+            appointment_id = termin_creation(slots[0], 1)
             if 'file_names' not in st.session_state:
                 st.session_state.file_names = []
             st.session_state.file_names = []

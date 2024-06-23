@@ -1,7 +1,7 @@
 import streamlit as st
 import sqlite3
 from backend.termin_manipulation import termin_cancelation, get_one_termin, get_pat_termin, get_all_files, \
-    download_blob_from_db
+    get_doc_termin, download_blob_from_db
 
 # Date, Location, Doctor name, Summary, Documents?
 termin_key = st.session_state.termin_key
@@ -12,8 +12,6 @@ termin_key = st.session_state.termin_key
 
 termin_db_info = get_one_termin(termin_key)
 file_info = get_all_files(termin_key)
-
-print(termin_db_info)
 
 
 # def open_termin(termin):
@@ -57,29 +55,29 @@ def open_termin(termin):
     st.write(termin_key)
     date = st.write(f"Date: {termin[0]}")
     time = st.write(f"Time:  {termin[1]}")
-    doctor = st.write(f"Doctor: {termin[2]} {termin[3]}")
+    patient = st.write(f"Patient: {termin[5]} {termin[6]}")
     address = st.write(f"Address: {termin[4]}")
     files = file_info
     if files:
         st.write("You Have Files")
-        if st.button("Download Files"):
-            download_blob_from_db(termin_key, "attached")
     summary = termin[7]
     if summary is None:
-        st.write(":red[Form not Filled, Please Fill Form]")
+        st.write(":red[Patient has not Filled Questionnaire]")
+    else:
+        # DOWNLOAD SUMMARY HERE
+        if st.button("Download Summary"):
+            download_blob_from_db(termin_key, "summary")
+            st.write("Files Downloaded")
     # This Button Opens a small tab
     with st.expander("Important Information"):
-        st.write("Please bring with you all of your money in your bank account")
-        if summary is None:
-            if st.button("Fill in Form NOW"):
-                st.switch_page("./pages/fragebogen.py")
+        st.text_input("Extra Information for the patient")
 
     c1, c2, c3 = st.columns([1, 1, 2])
     with c1:
         if st.button("Cancel Appointment"):
             termin_cancelation(termin_key)
-            st.session_state.appointment_list = get_pat_termin(1)
-            st.switch_page("./pages/patient_module.py")
+            st.session_state.doctor_appointments = get_doc_termin(1)
+            st.switch_page("./pages/doctor_module.py")
     with c2:
         st.button("Reschedule Appointment")
 

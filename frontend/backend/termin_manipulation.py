@@ -9,7 +9,7 @@ def get_one_termin(term_id):
         sqliteConnection = sqlite3.connect("./backend/Test.db")
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
-        query = f"SELECT slotDate, slotTime, docName, docSurname, locAddress, summary FROM TerminInfo WHERE termID = (?)"
+        query = f"SELECT slotDate, slotTime, docName, docSurname, locAddress, patName, patSurname, summary FROM TerminInfo WHERE termID = (?)"
 
         print(query)
         cursor.execute(query, (term_id,))
@@ -24,6 +24,52 @@ def get_one_termin(term_id):
         if sqliteConnection:
             sqliteConnection.close()
             print("the sqlite connection is closed")
+
+
+def get_all_files(ter_id):
+    try:
+        term_id = str(ter_id)
+        sqliteConnection = sqlite3.connect("./backend/Test.db")
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+        query = f"SELECT file FROM TerminAttachedFiles WHERE termID = (?)"
+        cursor.execute(query, (term_id,))
+        sqliteConnection.commit()
+        rows = cursor.fetchall()
+        cursor.close()
+        return rows
+    except sqlite3.Error as error:
+        print("Failed to Get Table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("the sqlite connection is closed")
+
+
+def download_blob_from_db(term_id, mode):
+    conn = sqlite3.connect('./backend/Test.db')
+    cursor = conn.cursor()
+
+    if mode == 'summary':
+        cursor.execute('SELECT termID, summary FROM Termins WHERE TermID = ?', (term_id,))
+    elif mode == 'attached':
+        cursor.execute('SELECT documentID, file FROM TerminAttachedFiles WHERE TermID = ?', (term_id,))
+
+    row = cursor.fetchone()
+    id, data = row
+    file_path = f'attached_file_{id}.pdf'
+
+    # Check if a row was returned
+    if row:
+        # Write the BLOB data to a file
+        with open(file_path, 'wb') as file:
+            file.write(data)
+    else:
+        print(f"No file found with ID {term_id}")
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
 
 
 def termin_creation(slot_id, pat_id):
@@ -43,11 +89,11 @@ def termin_creation(slot_id, pat_id):
         insert_tuple = (pat_id, slot_id, 1)
         cursor.execute(create_query, insert_tuple)
         print('Termin was added to the table')
-
+        term_id = cursor.lastrowid
         sqliteConnection.commit()
         print("File updated successfully")
         cursor.close()
-
+        return term_id
     except sqlite3.Error as error:
         print("Failed to update table", error)
     finally:
@@ -194,7 +240,7 @@ def get_pat_termin(pat_id):
         sqliteConnection = sqlite3.connect("./backend/Test.db")
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
-        query = """SELECT termID, docName, docSurname, slotDate, slotTime,locAddress FROM TerminInfo WHERE patID = (?) AND status = 1"""
+        query = """SELECT termID, docName, docSurname, slotDate, slotTime, locAddress FROM TerminInfo WHERE patID = (?) AND status = 1"""
         cursor.execute(query, str(pat_id))
         sqliteConnection.commit()
         rows = cursor.fetchall()
@@ -234,7 +280,7 @@ def get_doc_termin(doc_id):
         sqliteConnection = sqlite3.connect("./backend/Test.db")
         cursor = sqliteConnection.cursor()
         print("Connected to SQLite")
-        query = """SELECT termID, patName, patSurname, slotDate, slotTime, locAddress FROM TerminInfo WHERE patID = (?) AND status = 1"""
+        query = """SELECT termID, patName, patSurname, slotDate, slotTime, locAddress FROM TerminInfo WHERE docID = (?) AND status = 1"""
         cursor.execute(query, str(doc_id))
         sqliteConnection.commit()
         rows = cursor.fetchall()
