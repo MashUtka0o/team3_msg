@@ -85,9 +85,9 @@ def insert_summary(patID, slotID, status, summary_path):
         cursor = sqliteConnection.cursor()
         print("Connected to DB")
 
-        sqlite_insert_blob_query = """ INSERT INTO Termins ( patID, slotID, status, summary) VALUES (?, ?, ?, ?)"""
+        sqlite_insert_blob_query = """ INSERT INTO Termins ( patID, slotID, status, summary, file_path) VALUES (?, ?, ?, ?)"""
         summary = convertToBinaryData(summary_path)
-        data_tuple = (patID, slotID, status, summary)
+        data_tuple = (patID, slotID, status, summary, summary_path)
 
         cursor.execute(sqlite_insert_blob_query, data_tuple)
 
@@ -147,7 +147,7 @@ def attach_file_to_termin(termID, file_path):
         print("Connected to DB")
 
         file = convertToBinaryData(file_path)
-        cursor.execute(""" INSERT INTO TerminAttachedFiles(termID, file) VALUES (?, ?)""", (termID, file))
+        cursor.execute(""" INSERT INTO TerminAttachedFiles(termID, file, file_path) VALUES (?, ?)""", (termID, file, file_path))
 
         sqliteConnection.commit()
         print("File inserted successfully as a BLOB into a TerminAtachedFiles table")
