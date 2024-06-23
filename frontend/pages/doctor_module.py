@@ -31,6 +31,24 @@ patients_of_the_day = [
      "appointment_time": "2024-06-25 09:00"}
 ]
 
+# load fragenbogen dynamic for a demo patient (new created)
+print(os.getcwd())
+fragenbogen_generated_path = "./backend/fragebogen.json"
+with open(fragenbogen_generated_path, "r") as file2:
+    demo_patient_data = json.load(file2)
+
+print(demo_patient_data)
+
+map_info_dict = {
+    "name" : demo_patient_data["name"] + demo_patient_data["nachname"],
+    "insurance_number": "ZZZZZZ",
+    "photo": "./backend/dummy_patients/max.png",
+    "data_file" : None,
+    "appointment_time": "2024-06-25 11:30"}
+
+# append to the patients of the day list 
+patients_of_the_day.append(map_info_dict)
+
 # Initialize session state to track selected patient
 if "selected_patient" not in st.session_state:
     st.session_state.selected_patient = None
@@ -65,9 +83,43 @@ def display_patient_list():
             st.session_state.selected_patient = idx
 
 def display_patient_details(patient):
-    # Load patient data from the selected file
-    with open(patient["data_file"], "r") as file:
-        patient_data = json.load(file)
+
+    if patient["data_file"] is not None:
+        # Load patient data from the selected file
+        with open(patient["data_file"], "r") as file:
+            patient_data = json.load(file)
+
+    else:
+        patient_data = { "personal_information": {
+                                "name": map_info_dict["name"],
+                                "birth_date": demo_patient_data["dob"],
+                                "gender": "Male",
+                                "address": "Musterstraße 12, 12345 Berlin",
+                                "phone": "01234-567890",
+                                "email": "test@example.com" },
+
+                             "medical_history": {
+                                "main_reason": demo_patient_data["purpose_of_visit"],
+                                "complaint_start_date": "1 week before",
+                                "complaint_onset": "Suddenly",
+                                "previous_similar_complaints": true,
+                                "previous_treatments": "None",
+                                "current_medications": "None"
+                            },
+                            "pain_details": {
+                                "pain_scale": demo_patient_data["pain_scale"],
+                                "pain_location": demo_patient_data["pain_location"],
+                                "pain_timing": ["Morning", "During movement"],
+                                "pain_relief": "None",
+                                "pain_worsening": "None"
+                                },
+                            "additional_health_information": {
+                                "allergies": "None",
+                                "chronic_diseases": "None",
+                                "smoking": "None",
+                                "alcohol": "Yes, occasionally"
+                            },
+                            "additional_notes": demo_patient_data["followup_questions"]}
 
     # Display patient photo
     image = Image.open(patient["photo"])

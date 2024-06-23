@@ -41,9 +41,9 @@ class MedicalReportGenerator:
         and invoke the content """
 
         custom_prompt_template = """
-            Generate a detailed medical summary for the doctor based on the following patient data.
+            Generate a detailed medical summary at first for the doctor based on the following patient data.
             Dont recommend anything to the doctor; you are an assistant to the doctor, just summarizing the information about the patient.
-            only return a summary from the given informations. 
+            only return a summary and then following the details from the given informations. 
 
             Patient Information:
             - Name: {name}
