@@ -77,9 +77,8 @@ elif st.session_state.current_step == "followup_questions":
                         "nachname": data[1],
                         "dob": data[2]}
         json_dump = {**st.session_state.fragebogen, **patient_data}
-        # with open("fragebogen.json", "w") as f:
-        #     json.dump(json_dump, f, indent=4)
-        # st.session_state.summary_result = Call A function
+        with open("fragebogen.json", "w") as f:
+            json.dump(json_dump, f, indent=4)
         st.success("Fragebogen saved successfully!")
         st.session_state.current_step = "completed"
 

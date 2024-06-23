@@ -39,8 +39,9 @@ You are a helpful assistant that helps a doctor gather more details about a pati
    - Operation"
 ]
 
-Given the pain details provided by the patient, generate 5 follow-up questions.
+Given the pain details provided by the patient, generate 5 follow-up questions, all should be answered in text.
 """
+
 
 # Given the pain details provided by the patient, generate 5 follow-up questions with max 4 suggestion with number e.g (1.XXXX) in order the patient put as answer.
 
@@ -50,14 +51,12 @@ def generate_followup_questions(pain_location, pain_type, pain_scale):
         model=MODEL_NAME,
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": f"{followup_prompt} \n The patient is experiencing {pain_type} pain located at {pain_location} with a pain scale of {pain_scale}/10."},
+            {"role": "user",
+             "content": f"{followup_prompt} \n The patient is experiencing {pain_type} pain located at {pain_location} with a pain scale of {pain_scale}/10."},
         ],
     )
     questions = chatResponse.choices[0].message.content.strip().split("\n")
 
-
     print(questions)
 
     return [question for question in questions[1:-2] if question]
-
-
