@@ -14,14 +14,9 @@ import os
 # Have: patID
 # Get: terID, (docName, docSurname), slotDate, slotTime, locAddress
 
-data = termin_manipulation.get_one_patient(1)[0]
+if "appointment_list" not in st.session_state:
+    st.session_state.appointment_list = termin_manipulation.get_pat_termin(1)
 
-patient_data = {"name": data[0],
-                "nachname": data[1],
-                "dob": data[2]}
-print(patient_data)
-
-appointment_list = termin_manipulation.get_pat_termin(1)
 location_list = termin_manipulation.get_loc()
 doc_type_list = termin_manipulation.get_doctor_type()
 
@@ -86,7 +81,7 @@ if st.button("Update notifications"):
 def display_appointments(appointments):
     st.header("Your Appointments")
     if appointments:
-        for appointment in appointment_list:
+        for appointment in appointments:
             st.write(f"**Doctor**: {appointment[1]} {appointment[2]}")
             st.write(f"**Date**: {appointment[3]}")
             st.write(f"**Time**: {appointment[4]}")
@@ -122,8 +117,6 @@ def book_appointment():
         slot_list = termin_manipulation.get_free_slots(location, doctor)
         if slot_list:
             slots = st.selectbox("Slots Available", slot_list)
-            date = st.date_input("Select Date")
-            time = st.time_input("Select Time")
         else:
             st.write("No Slots Available")
         files = st.file_uploader("Select files", type="pdf", accept_multiple_files=True)
@@ -141,6 +134,9 @@ def book_appointment():
                     f.write(file.getbuffer())
                 st.session_state.path = os.path.abspath(os.path.join('tempDir', file.name))
         if st.button("Book Appointment"):
+            print("Fuck You")
+            print(slots[0])
+            termin_creation(slots[0], 1)
             if 'file_names' not in st.session_state:
                 st.session_state.file_names = []
             st.session_state.file_names = []
@@ -152,8 +148,8 @@ def book_appointment():
                 "location": location,
                 "doctor type": doctor_type,
                 "doctor": doctor,
-                "date": date.strftime("%Y-%m-%d"),
-                "time": time.strftime("%I:%M %p"),
+                # "date": date.strftime("%Y-%m-%d"),
+                # "time": time.strftime("%I:%M %p"),
                 "summary": " ",
                 "files": st.session_state.file_names,
                 "id": appointment_id
@@ -164,7 +160,7 @@ def book_appointment():
             st.session_state.appointments.append(new_appointment)
             st.success("Appointment booked successfully!")
             termin_creation(slot_id, 1)  # slot_id and pat_id
-            appointment_list = termin_manipulation.get_pat_termin(1)
+            st.session_state.appointment_list = termin_manipulation.get_pat_termin(1)
         st.session_state.files = []
         st.session_state.file_names = []
         st.session_state.path = None
@@ -176,7 +172,7 @@ tab1, tab2 = st.tabs(["Appointments", "Prescriptions"])
 
 with tab1:
     book_appointment()
-    display_appointments(appointment_list)
+    display_appointments(st.session_state.appointment_list)
 
 with tab2:
     display_prescriptions(prescriptions)

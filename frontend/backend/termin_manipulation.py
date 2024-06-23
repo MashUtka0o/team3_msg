@@ -3,6 +3,29 @@ from os import getcwd
 import datetime
 
 
+def get_one_termin(term_id):
+    try:
+        term_id = str(term_id)
+        sqliteConnection = sqlite3.connect("./backend/Test.db")
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+        query = f"SELECT slotDate, slotTime, docName, docSurname, locAddress, summary FROM TerminInfo WHERE termID = (?)"
+
+        print(query)
+        cursor.execute(query, (term_id,))
+        sqliteConnection.commit()
+        rows = cursor.fetchall()
+        rows = list(dict.fromkeys(rows))
+        cursor.close()
+        return rows[0]
+    except sqlite3.Error as error:
+        print("Failed to Get Table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("the sqlite connection is closed")
+
+
 def termin_creation(slot_id, pat_id):
     try:
         sqliteConnection = sqlite3.connect('./backend/Test.db')
