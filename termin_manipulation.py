@@ -186,6 +186,31 @@ def download_blob_from_db(term_id, mode):
     conn.close()
 
 
+def show_attached_files(term_id):
+    try:
+        sqliteConnection = sqlite3.connect('Test.db')
+        cursor = sqliteConnection.cursor()
+        print("Connected to DB")
+
+        cursor.execute(""" SELECT file_path, file FROM TerminAttachedFiles WHERE termID = (?) """, (term_id,))
+        files = [list(tup) for tup in cursor.fetchall()]
+
+        for file in files:
+            if not file[0]:
+                files.pop(file)
+
+        sqliteConnection.commit()
+        cursor.close()
+        print(files)
+        return
+
+    except sqlite3.Error as error:
+        print("Failed to show", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+
+
 def add_text(record, mode):
     packet = BytesIO()
     can = canvas.Canvas(packet, pagesize=A4)
@@ -425,4 +450,5 @@ def check_notification(user_id, user_type):
             sqliteConnection.close()
 
 
-download_blob_from_db(1, 'attached')
+
+show_attached_files(1)
