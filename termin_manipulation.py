@@ -160,6 +160,32 @@ def attach_file_to_termin(termID, file_path):
             sqliteConnection.close()
 
 
+def download_blob_from_db(term_id, mode):
+    conn = sqlite3.connect('Test.db')
+    cursor = conn.cursor()
+
+    if mode == 'summary':
+        cursor.execute('SELECT termID, summary FROM Termins WHERE TermID = ?', (term_id,))
+    elif mode == 'attached':
+        cursor.execute('SELECT documentID, file FROM TerminAttachedFiles WHERE TermID = ?', (term_id,))
+
+    row = cursor.fetchone()
+    id, data = row
+    file_path = f'Downloaded_file/attached_file_{id}.pdf'
+
+    # Check if a row was returned
+    if row:
+        # Write the BLOB data to a file
+        with open(file_path, 'wb') as file:
+            file.write(data)
+    else:
+        print(f"No file found with ID {term_id}")
+
+    # Close the cursor and connection
+    cursor.close()
+    conn.close()
+
+
 def add_text(record, mode):
     packet = BytesIO()
     can = canvas.Canvas(packet, pagesize=A4)
@@ -399,5 +425,4 @@ def check_notification(user_id, user_type):
             sqliteConnection.close()
 
 
-check_notification(1, 'pat')
-check_notification(1, 'doc')
+download_blob_from_db(1, 'attached')
